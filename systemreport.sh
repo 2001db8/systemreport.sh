@@ -579,8 +579,8 @@ then
             done
         done < <($FIREWALLCMD --get-zones)
     fi
-fi
 $ECHO "^[nach oben](#${HOSTNAMECLN})"
+fi
 
 if [[ -n $IPTABLES ]]
 then
