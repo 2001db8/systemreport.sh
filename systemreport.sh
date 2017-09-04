@@ -290,6 +290,15 @@ then
     $LSBLK
     $ECHO -e '```'
     $ECHO "^[nach oben](#${HOSTNAMECLN})"
+fi
+
+if [[ -n $LSSCSI ]]
+then
+    $ECHO -e "\n### SCSI Devices" '`lsscsi`:'
+    $ECHO -e '```'
+    $LSSCSI -L --size -v
+    $ECHO -e '```'
+    $ECHO "^[nach oben](#${HOSTNAMECLN})"
 fi 
 
 if [[ -n $DF ]]
