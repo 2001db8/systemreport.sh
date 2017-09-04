@@ -6,7 +6,7 @@
 # Kurze Bestandsaufnahme von Linux Systemen.
 # Fuer genaue Ergebnisse bitte als root starten.
 #
-# TODO: lsscsi, Virtualisierung, Vereinfachen mit Funktionen
+# TODO: Virtualisierung, Vereinfachen mit Funktionen
 
 # Da wir Fehlerhafte Kommandos erwarten und auch mal Whitespace
 # als Trenner wollen, lassen wir das vorerst weg:
@@ -125,9 +125,9 @@ then
     if [[ -n $LSBRELEASE ]]
     then
         $ECHO -e "\n### RHEL Version" '`lsb_release`:'
-        $ECHO -e "```"
+        $ECHO -e '```'
         $LSBRELEASE -a 2>/dev/null
-        $ECHO -e "```"
+        $ECHO -e '```'
         $ECHO "^[nach oben](#${HOSTNAMECLN})"
     else
         $ECHO -e "\n### RHEL Version" '`/etc/redhat-release`:'
