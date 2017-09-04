@@ -128,13 +128,13 @@ then
         $ECHO -e '```'
         $LSBRELEASE -a 2>/dev/null
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     else
         $ECHO -e "\n### RHEL Version" '`/etc/redhat-release`:'
         $ECHO -e '```'
         $CAT /etc/redhat-release
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     fi
 elif [[ $DISTRIBUTION == "debian" ]]
 then
@@ -144,13 +144,13 @@ then
         $ECHO -e '```'
         $LSBRELEASE -a 2>/dev/null
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     else
         $ECHO -e "\n### Debian Version" '`/etc/debian_version`:'
         $ECHO -e '```'
         $CAT /etc/debian_version
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     fi
 fi
 
@@ -160,7 +160,7 @@ then
     $ECHO -e '```'
     $CAT /etc/issue
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 # User und Gruppen
@@ -170,11 +170,13 @@ $ECHO -e "\n### Lokale User aus" '`'/etc/passwd'`:'
 $ECHO -e '```'
 $CAT /etc/passwd
 $ECHO -e '```'
+$ECHO "[nach oben](#${HOSTNAMECLN})"
 
 $ECHO -e "\n### Lokale Gruppen aus" '`'/etc/group'`:'
 $ECHO -e '```'
 $CAT /etc/group
 $ECHO -e '```'
+$ECHO "[nach oben](#${HOSTNAMECLN})"
 
 # Disabled by default ;)
 #if [[ $ISROOT == true ]]
@@ -198,7 +200,7 @@ then
             # alternativ:
             # $CRONTAB -l -u $($BASENAME $CRONFILE)
             $ECHO -e '```'
-            $ECHO "^[nach oben](#${HOSTNAMECLN})"
+            $ECHO "[nach oben](#${HOSTNAMECLN})"
         done < <(find /var/spool/cron/crontabs -maxdepth 1 -type f -print0)  
     elif [[ -d "/var/spool/cron" ]]
     then
@@ -209,7 +211,7 @@ then
             # alternativ:
             # $CRONTAB -l -u $($BASENAME $CRONFILE)
             $ECHO -e '```'
-            $ECHO "^[nach oben](#${HOSTNAMECLN})"
+            $ECHO "[nach oben](#${HOSTNAMECLN})"
         done < <(find /var/spool/cron -maxdepth 1 -type f -print0)  
     fi
 else
@@ -217,7 +219,7 @@ else
     $ECHO -e '```'
     $CRONTAB -l
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi 
 
 ###########################################
@@ -234,7 +236,7 @@ then
     $ECHO -e '```'
     $LSHW -short
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi 
 
 if [[ -n $LSCPU ]]
@@ -244,13 +246,13 @@ then
     $ECHO -e '```'
     $LSCPU
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 else
     $ECHO -e "\n### CPU Info aus" '`/proc/cpuinfo`:'
     $ECHO -e '```'
     $CAT /proc/cpuinfo
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi 
 
 if [[ -n $HWINFO ]]
@@ -259,7 +261,7 @@ then
     $ECHO -e '```'
     $HWINFO -short
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi 
 
 if [[ -n $MOUNT ]]
@@ -268,7 +270,7 @@ then
     $ECHO -e '```'
     $MOUNT | $COLUMN -t
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 if [[ $ISROOT == true ]]
@@ -279,7 +281,7 @@ then
         $ECHO -e '```'
         $FDISK -l
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     fi
 fi
 
@@ -289,7 +291,7 @@ then
     $ECHO -e '```'
     $LSBLK
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 if [[ -n $LSSCSI ]]
@@ -298,7 +300,7 @@ then
     $ECHO -e '```'
     $LSSCSI -L --size -v
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi 
 
 if [[ -n $DF ]]
@@ -307,7 +309,7 @@ then
     $ECHO -e '```'
     $DF -h
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi 
 
 # LVM?
@@ -321,17 +323,17 @@ then
         $ECHO -e '```'
         $PVDISPLAY
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
         $ECHO -e "\n#### Volume Groups" '`vgdisplay`:'
         $ECHO -e '```'
         $VGDISPLAY
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
         $ECHO -e "\n#### Logical Volumes" '`lvdisplay`:'
         $ECHO -e '```'
         $LVDISPLAY
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     fi
 fi   
 
@@ -343,7 +345,7 @@ then
         $ECHO -e '```'
         $DMIDECODE
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     fi
 fi
 
@@ -353,7 +355,7 @@ then
     $ECHO -e '```'
     $LSPCI
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 if [[ -n $LSUSB ]]
@@ -362,7 +364,7 @@ then
     $ECHO -e '```'
     $LSUSB
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 if [[ -n $FREE ]]
@@ -371,13 +373,13 @@ then
     $ECHO -e '```'
     $FREE
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 else
     $ECHO -e "\n### RAM Info aus" '`/proc/meminfo`:'
     $ECHO -e '```'
     $CAT /proc/meminfo
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 ###########################################
@@ -397,37 +399,37 @@ then
     $IP a
     $IP l
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 
     $ECHO -e "\n### Routen" '`ip r`:'
     $ECHO -e '```'
     $IP r
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
     
     $ECHO -e "\n### ARP Table" '`ip n`:'
     $ECHO -e '```'
     $IP n | $COLUMN -t
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 else
     ECHO -e "\n### IP und MAC Adressen" '`ifconfig -a`:'
     $ECHO -e '```'
     $IFCONFIG -a
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 
     $ECHO -e "\n### Routen" '`route`:'
     $ECHO -e '```'
     $ROUTE
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
     
     $ECHO -e "\n### ARP Table" '`arp -an`:'
     $ECHO -e '```'
     $ARP -an
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 # Uebersicht aller Connections
@@ -437,7 +439,7 @@ then
     $ECHO -e '```'
     $NMCLI c s
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 # resolv.conf auslesen
@@ -447,7 +449,7 @@ then
     $ECHO -e '```'
     $CAT /etc/resolv.conf
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 # Aktuelle DNS Konfiguration aus nmcli
@@ -457,7 +459,7 @@ then
     $ECHO -e '```'
     for CON in $($NMCLI c s --active | $GREP -iv name | $AWK '{print $1}'); do $ECHO ${CON}:; $NMCLI con s $CON | $GREP DNS; done
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 # ethtool fuer Interfaces aus /proc/net/dev die >0 Bytes in haben. Die ersten 2 Zeilen (Header) und lo werden uebergangen
@@ -486,7 +488,7 @@ then
         $ECHO -e '```'
         $LSOF -iTCP | $GREP -i listen
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     fi
 fi
 
@@ -533,14 +535,14 @@ then
     $ECHO -e "SELinux boolean                State  Default Description"
     $SEMANAGE boolean -l | $TAIL -n +2 | $SORT
     $ECHO -e '```'    
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 elif [[ -n $GETSEBOOL ]]
 then
     $ECHO -e "\n### SELinux boolean Werte via " '`getsebool`:'
     $ECHO -e '```'
     $GETSEBOOL -a
     $ECHO -e '```'    
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 if [[ ( -n $FIREWALLCMD ) && ( -n $SYSTEMCTL ) ]]
@@ -579,7 +581,7 @@ then
             done
         done < <($FIREWALLCMD --get-zones)
     fi
-$ECHO "^[nach oben](#${HOSTNAMECLN})"
+$ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 if [[ -n $IPTABLES ]]
@@ -610,24 +612,24 @@ then
     $ECHO -e '```'
     $YUM repolist
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
     $ECHO -e "\n### Installierte Pakete" '`yum list installed`:'
     $ECHO -e '```'
     $YUM list installed
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 elif [[ $DISTRIBUTION == "debian" ]]
 then
     $ECHO -e "\n### Repositories" '`apt-cache policy`:'
     $ECHO -e '```'
     $APTCACHE policy
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
     $ECHO -e "\n### Installierte Pakete" '`dpkg -l`:'
     $ECHO -e '```'
     $DPKG -l | $GREP "^.i"
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 if [[ -n $PS ]]
@@ -636,7 +638,7 @@ then
     $ECHO -e '```'
     $PS auxfw
     $ECHO -e '```'
-    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
 
 ## Crontabs
@@ -651,7 +653,7 @@ fi
 #            # alternativ:
 #            # $CRONTAB -l -u $($BASENAME $CRONFILE)
 #            $ECHO -e '```'
-#            $ECHO "^[nach oben](#${HOSTNAMECLN})"
+#            $ECHO "[nach oben](#${HOSTNAMECLN})"
 #        done < <(find /var/spool/cron/crontabs -maxdepth 1 -type f -print0)  
 #    elif [[ -d "/var/spool/cron" ]]
 #    then
@@ -662,7 +664,7 @@ fi
 #            # alternativ:
 #            # $CRONTAB -l -u $($BASENAME $CRONFILE)
 #            $ECHO -e '```'
-#            $ECHO "^[nach oben](#${HOSTNAMECLN})"
+#            $ECHO "[nach oben](#${HOSTNAMECLN})"
 #        done < <(find /var/spool/cron/crontabs -maxdepth 1 -type f -print0)  
 #    fi
 #else
@@ -670,7 +672,7 @@ fi
 #    $ECHO -e '```'
 #    $CRONTAB -l
 #    $ECHO -e '```'
-#    $ECHO "^[nach oben](#${HOSTNAMECLN})"
+#    $ECHO "[nach oben](#${HOSTNAMECLN})"
 #fi 
 
 
@@ -684,19 +686,19 @@ then
         $ECHO -e '```'
         $SCRIPT -q -c "$POSTFIX status"      # postfix wirft nix auf STDOUT oder STDERR aus...
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
         $ECHO -e "\n#### Postfix !Default-Config" '`postconf -n`:'
         $ECHO -e '```'
         $POSTCONF -n
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
             if [[ -d /etc/postfix/ ]]
                 then
                 $ECHO -e "\n#### Postfix Directory" '`/etc/postfix`:'
                 $ECHO -e '```'
                 $LS -lah /etc/postfix
                 $ECHO -e '```'
-                $ECHO "^[nach oben](#${HOSTNAMECLN})"
+                $ECHO "[nach oben](#${HOSTNAMECLN})"
             fi
             if [[ -n MAILQ ]]
             then
@@ -704,7 +706,7 @@ then
                 $ECHO -e '```'
                 $MAILQ
                 $ECHO -e '```'
-                $ECHO "^[nach oben](#${HOSTNAMECLN})"
+                $ECHO "[nach oben](#${HOSTNAMECLN})"
             fi
     fi 
 fi
@@ -719,7 +721,7 @@ then
         $ECHO -e '```'
         $RNDC status
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     fi
 fi
 
@@ -733,7 +735,7 @@ then
         $ECHO -e '```'
         $APACHECTL status
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     elif [[ -n $APACHE2CTL ]]
     then
         $ECHO -e "\n### Apache Webserver"
@@ -741,10 +743,10 @@ then
         $ECHO -e '```'
         $APACHE2CTL status
         $ECHO -e '```'
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     else
         $ECHO -e "\n### Webserver"
         $ECHO -e "Eine Art" '`httpd`' "laeuft aber es ist vermutlich kein Apache."
-        $ECHO "^[nach oben](#${HOSTNAMECLN})"
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
     fi
 fi
