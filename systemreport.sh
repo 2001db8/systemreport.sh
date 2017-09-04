@@ -28,6 +28,7 @@ readonly DATE=$(command -v date)
 readonly DF=$(command -v df)
 readonly DIG=$(command -v dig)
 readonly DMIDECODE=$(command -v dmidecode)
+readonly DOCKER=$(command -v docker)
 readonly DPKG=$(command -v dpkg)
 readonly ECHO=$(command -v echo)
 readonly ETHTOOL=$(command -v ethtool)
@@ -76,23 +77,26 @@ readonly TIMEOUT=$(command -v timeout)
 readonly TCPDUMP=$(command -v tcpdump)
 readonly UPTIME=$(command -v uptime)
 readonly VGDISPLAY=$(command -v vgdisplay)
+readonly VIRSH=$(command -v virsh)
+readonly VIRTWHAT=$(command -v virt-what)
 readonly WHOAMI=$(command -v whoami)
+readonly XM=$(command -v xm)
 readonly YUM=$(command -v yum)
 
 # Hostnamen einstampfen fuer die "nach oben" Links
 readonly HOSTNAMECLN=$($HOSTNAMECMD | $SED 's/[^[:alnum:]-]//g')
 
-# RedHat basiertes hat yum, Debian und Freunde haben dpkg und wenn wir nix davon
-# finden haben wir was anderes und steigen lieber mal aus.
-if [[ -n $YUM ]]
+# Handelt es sich um eine VM?
+if $GREP -qEe "^flags.*hypervisor.*" /proc/cpuinfo
 then
-    DISTRIBUTION=rhel
-elif [[ -n $DPKG ]]
-then
-    DISTRIBUTION=debian
+    readonly ISVM=true
+    readonly VMNOTICE="Virtualisiertes "
+    if [[ -n $VIRTWHAT ]]
+    then
+        readonly HYPERTYPE=$($VIRTWHAT)
+    fi
 else
-    $ECHO -e "\WEDER YUM NOCH DPKG GEFUNDEN! GEBE AUF!"
-    exit 1
+    readonly ISVM=false
 fi
 
 # Sind wir root?
@@ -104,8 +108,28 @@ else
     readonly CURUSER=$($WHOAMI)
 fi
 
-# Hier gehts los
+# Funktionen
+vmwarn() {
+    if [[ $ISVM == true ]]
+    then
+        $ECHO -e "\n*Bitte beachten: System ist eine VM.*"
+    fi 
+}
 
+# RedHat basiertes hat yum, Debian und Freunde haben dpkg und wenn wir nix davon
+# finden haben wir was anderes und steigen lieber mal aus.
+if [[ -n $YUM ]]
+then
+    DISTRIBUTION=rhel
+elif [[ -n $DPKG ]]
+then
+    DISTRIBUTION=debian
+else
+    $ECHO -e "\nWEDER YUM NOCH DPKG GEFUNDEN! GEBE AUF!"
+    exit 1
+fi
+
+# Hier gehts los
 
 $ECHO -e "# " $($HOSTNAMECMD)
 $ECHO -e "generiert am " $($DATE) "\n"
@@ -124,13 +148,13 @@ if [[ $DISTRIBUTION == "rhel" ]]
 then
     if [[ -n $LSBRELEASE ]]
     then
-        $ECHO -e "\n### RHEL Version" '`lsb_release`:'
+        $ECHO -e "\n### ${VMNOTICE}RHEL/CentOS. Version" '`lsb_release`:'
         $ECHO -e '```'
         $LSBRELEASE -a 2>/dev/null
         $ECHO -e '```'
         $ECHO "[nach oben](#${HOSTNAMECLN})"
     else
-        $ECHO -e "\n### RHEL Version" '`/etc/redhat-release`:'
+        $ECHO -e "\n### ${VMNOTICE}RHEL/CentOS. Version" '`/etc/redhat-release`:'
         $ECHO -e '```'
         $CAT /etc/redhat-release
         $ECHO -e '```'
@@ -140,13 +164,13 @@ elif [[ $DISTRIBUTION == "debian" ]]
 then
     if [[ -n $LSBRELEASE ]]
     then
-        $ECHO -e "\n### Debian Version" '`lsb_release`:'
+        $ECHO -e "\n### ${VMNOTICE}Debian. Version" '`lsb_release`:'
         $ECHO -e '```'
         $LSBRELEASE -a 2>/dev/null
         $ECHO -e '```'
         $ECHO "[nach oben](#${HOSTNAMECLN})"
     else
-        $ECHO -e "\n### Debian Version" '`/etc/debian_version`:'
+        $ECHO -e "\n### ${VMNOTICE}Debian. Version" '`/etc/debian_version`:'
         $ECHO -e '```'
         $CAT /etc/debian_version
         $ECHO -e '```'
@@ -233,6 +257,7 @@ $ECHO -e "\n## Hardware\n"
 if [[ -n $LSHW ]]
 then
     $ECHO -e "\n### Hardwareuebersicht" '`lshw -short`:'
+    vmwarn
     $ECHO -e '```'
     $LSHW -short
     $ECHO -e '```'
@@ -242,6 +267,7 @@ fi
 if [[ -n $LSCPU ]]
 then
     $ECHO -e "\n### CPU Info per" '`lscpu`:'
+    vmwarn
     [[ $ISROOT == false ]] && $ECHO -e "(Ohne root-Rechte. Nur eingeschraenkte Funktionen.\n)"
     $ECHO -e '```'
     $LSCPU
@@ -257,7 +283,8 @@ fi
 
 if [[ -n $HWINFO ]]
 then
-    $ECHO -e "\n### Hardwareuebrsicht" '`hwinfo -short`:'
+    $ECHO -e "\n### Hardwareuebrsicht" '`hwinfo`:'
+    vmwarn
     $ECHO -e '```'
     $HWINFO -short
     $ECHO -e '```'
@@ -297,6 +324,7 @@ fi
 if [[ -n $LSSCSI ]]
 then
     $ECHO -e "\n### SCSI Devices" '`lsscsi`:'
+    vmwarn
     $ECHO -e '```'
     $LSSCSI -L --size -v
     $ECHO -e '```'
@@ -342,6 +370,7 @@ then
     if [[ -n $DMIDECODE ]]
     then
         $ECHO -e "\n### Hardwareinfos per" '`dmidecode`:'
+        vmwarn
         $ECHO -e '```'
         $DMIDECODE
         $ECHO -e '```'
@@ -352,6 +381,7 @@ fi
 if [[ -n $LSPCI ]]
 then
     $ECHO -e "\n### PCI Devices" '`lspci`:'
+    vmwarn
     $ECHO -e '```'
     $LSPCI
     $ECHO -e '```'
@@ -361,6 +391,7 @@ fi
 if [[ -n $LSUSB ]]
 then
     $ECHO -e "\n### USB Devices" '`lsusb`:'
+    vmwarn
     $ECHO -e '```'
     $LSUSB
     $ECHO -e '```'
@@ -466,6 +497,7 @@ fi
 if [[ -n $ETHTOOL ]]
 then
     $ECHO -e "\n### Interfacesettings fuer aktive Interfaces" '`ethtool`:'
+    vmwarn
     while read PROCNETDEVLINE
     do
         if [[ ( $($ECHO $PROCNETDEVLINE | $AWK '{print $2}') != 0 ) && ( $($ECHO $PROCNETDEVLINE | $AWK '{print $2}') != [a-zA-Z]+$ ) ]]
@@ -494,8 +526,8 @@ fi
 
 # Versuch CDP Traffic mitzulesen fuer Infos an welchem Switch/Port und in welchem VLAN man ist.
 # Bei vielen Interfaces besser auskommentieren wenn kein CDP aktiv oder Updates nur alle 60
-# Sekunden kommen. TODO: y/n Abfrage
-if [[ ( $ISROOT == true ) && ( -n $TCPDUMP ) && ( -n $TIMEOUT ) ]]
+# Sekunden kommen.
+if [[ ( $ISROOT == true ) && ( -n $TCPDUMP ) && ( -n $TIMEOUT ) && ( $ISVM == false ) ]]
 then
     # 2>&1 $ECHO -e "Versuche CDP Pakete zu finden. Kann per aktivem Interface bis zu 60 Sekunden dauern." 
     $ECHO -e "\n### CDP Nachrichten"
@@ -726,8 +758,7 @@ then
 fi
 
 # Webserver?
-if $PGREP httpd >/dev/null 2>&1
-then
+httpdstatus() {
     if [[ -n $APACHECTL ]]
     then
         $ECHO -e "\n### Apache Webserver"
@@ -749,4 +780,24 @@ then
         $ECHO -e "Eine Art" '`httpd`' "laeuft aber es ist vermutlich kein Apache."
         $ECHO "[nach oben](#${HOSTNAMECLN})"
     fi
+}
+
+if $PGREP httpd >/dev/null 2>&1
+then
+    httpdstatus
+elif $PGREP apache >/dev/null 2>&1
+    httpdstatus
+fi
+
+# Laeuft ein Hypervisor?
+
+if [[ ( -n $XM ) && ( $ISROOT == true ) ]]
+then
+    $ECHO -e "\n### Xen/libvirt"
+elif [[ ( -n $VIRSH ) && ( $ISROOT == true ) ]]
+then
+    $ECHO -e "\n### KVM/libvirt"
+elif [[ ( -n $DOCKER ) && ( $ISROOT == true ) ]]
+then
+    $ECHO -e "\n### Docker"
 fi
