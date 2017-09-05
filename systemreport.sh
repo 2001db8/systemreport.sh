@@ -540,11 +540,15 @@ fi
 # Uebersicht aller Connections
 if [[ -n $NMCLI ]]
 then
-    $ECHO -e "\n### Connection Uebersicht" '`nmcli con show`:'
-    $ECHO -e '```'
-    $NMCLI c s
-    $ECHO -e '```'
-    $ECHO "[nach oben](#${HOSTNAMECLN})"
+    # nmcli haengt teils wenn Network Manager gar nicht laeuft (https://bugzilla.redhat.com/show_bug.cgi?id=1213327)
+    if $PGREP "(NetworkManager|nm-applet)" >/dev/null 2>&1
+    then
+        $ECHO -e "\n### Connection Uebersicht" '`nmcli con show`:'
+        $ECHO -e '```'
+        $NMCLI c s
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+    fi
 fi
 
 # resolv.conf auslesen
@@ -560,11 +564,15 @@ fi
 # Aktuelle DNS Konfiguration aus nmcli
 if [[ -n $NMCLI ]]
 then
-    $ECHO -e "\n### [BETA] DNS Server per" '`nmcli con show <conn> `:'
-    $ECHO -e '```'
-    for CON in $($NMCLI c s --active | $GREP -iv name | $AWK '{print $1}'); do $ECHO ${CON}:; $NMCLI con s $CON | $GREP DNS; done
-    $ECHO -e '```'
-    $ECHO "[nach oben](#${HOSTNAMECLN})"
+    # nmcli haengt teils wenn Network Manager gar nicht laeuft (https://bugzilla.redhat.com/show_bug.cgi?id=1213327)
+    if $PGREP "(NetworkManager|nm-applet)" >/dev/null 2>&1
+    then
+        $ECHO -e "\n### [BETA] DNS Server per" '`nmcli con show <conn> `:'
+        $ECHO -e '```'
+        for CON in $($NMCLI c s --active | $GREP -iv name | $AWK '{print $1}'); do $ECHO ${CON}:; $NMCLI con s $CON | $GREP DNS; done
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+    fi
 fi
 
 # ethtool fuer Interfaces aus /proc/net/dev die >0 Bytes in haben. Die ersten 2 Zeilen (Header) und lo werden uebergangen
@@ -860,6 +868,7 @@ if $PGREP httpd >/dev/null 2>&1
 then
     httpdstatus
 elif $PGREP apache >/dev/null 2>&1
+then
     httpdstatus
 fi
 
