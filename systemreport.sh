@@ -21,6 +21,7 @@ readonly ARP=$(command -v arp)
 readonly AWK=$(command -v awk)
 readonly BASENAME=$(command -v basename)
 readonly CAT=$(command -v cat)
+readonly CHKCONFIG=$(command -v chkconfig)
 readonly COLUMN=$(command -v column)
 readonly CRONTAB=$(command -v crontab)
 readonly CUT=$(command -v cut)
@@ -30,6 +31,7 @@ readonly DIG=$(command -v dig)
 readonly DMIDECODE=$(command -v dmidecode)
 readonly DOCKER=$(command -v docker)
 readonly DPKG=$(command -v dpkg)
+readonly DRBDOVERVIEW=$(command -v drbd-overview)
 readonly ECHO=$(command -v echo)
 readonly ETHTOOL=$(command -v ethtool)
 readonly FDISK=$(command -v fdisk)
@@ -42,6 +44,7 @@ readonly GREP=$(command -v grep)
 readonly HOSTNAMECMD=$(command -v hostname)
 readonly HWINFO=$(command -v hwinfo)
 readonly IFCONFIG=$(command -v ifconfig)
+readonly INITCTL=$(command -v initctl)
 readonly IP=$(command -v ip)
 readonly IPTABLES=$(command -v iptables)
 readonly LS=$(command -v ls)
@@ -70,6 +73,7 @@ readonly ROUTE=$(command -v route)
 readonly SCRIPT=$(command -v script)
 readonly SED=$(command -v sed)
 readonly SEMANAGE=$(command -v semanage)
+readonly SERVICE=$(command -v service)
 readonly SORT=$(command -v sort)
 readonly SYSTEMCTL=$(command -v systemctl)
 readonly TAIL=$(command -v tail)
@@ -245,6 +249,76 @@ else
     $ECHO -e '```'
     $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi 
+
+# Services, Dienste usw.
+if [[ $DISTRIBUTION == "rhel" ]]
+then
+    $ECHO -e "\### Systemstart"
+    if [[ -n $SYSTEMCTL ]]
+    then
+        $ECHO -e "\n#### SystemD Units (nur Services)" '`systemctl`:'
+        $ECHO -e '```'
+        $SYSTEMCTL list-units --type=service --no-pager
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+
+        $ECHO -e "\n#### SystemD Unit-Files (nur Services)" '`systemctl`:'
+        $ECHO -e '```'
+        $SYSTEMCTL list-unit-files --type=service --no-pager
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+    fi
+    if [[ -n $CHKCONFIG ]]
+    then
+        $ECHO -e "\n#### SystemV Init" '`chkconfig`:'
+        $ECHO -e '```'
+        $CHKCONFIG
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+    fi
+elif [[ $DISTRIBUTION == "debian" ]]
+then
+    if [[ -n $SYSTEMCTL ]]
+    then
+        $ECHO -e "\n#### SystemD Units (nur Services)" '`systemctl`:'
+        $ECHO -e '```'
+        $SYSTEMCTL list-units --type=service
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+
+        $ECHO -e "\n#### SystemD Unit-Files (nur Services)" '`systemctl`:'
+        $ECHO -e '```'
+        $SYSTEMCTL list-unit-files --type=service
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+    elif [[ -n $INITCTL ]]
+    then
+        $ECHO -e "\n#### Upstart" '`initctl`:'
+        $ECHO -e '```'
+        $INITCTL list
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+    elif [[ -n $SERVICE ]]
+    then
+        $ECHO -e "\n#### SystemV Init" '`service`:'
+        $ECHO -e '```'
+        $SERVICE --status-all
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+
+        $ECHO -e "\n#### SystemV rc-Files" '`service`:'
+        $ECHO -e '```'
+        $LS /etc/rc*.d/
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+    else
+        $ECHO -e "\n#### SystemV rc-Files" '`service`:'
+        $ECHO -e '```'
+        $LS /etc/rc*.d/
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"       
+    fi
+fi
 
 ###########################################
 #
@@ -797,7 +871,53 @@ then
 elif [[ ( -n $VIRSH ) && ( $ISROOT == true ) ]]
 then
     $ECHO -e "\n### KVM/libvirt"
+    $ECHO -e "\n#### Liste der VMs" '`virsh`:'
+    $ECHO -e '```'
+    $VIRSH list --all
+    $ECHO -e '```'
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
+
+    $ECHO -e "\n#### Liste der virtuellen Netzwerke" '`virsh`:'
+    $ECHO -e '```'
+    $VIRSH net-list --all
+    $ECHO -e '```'
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
+
+
+    $ECHO -e "\n#### Faehigkeiten des KVM Hosts" '`virsh`:'
+    $ECHO -e '```'
+    $VIRSH -c qemu:///system capabilities
+    $ECHO -e '```'
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
+
+    $ECHO -e "\n#### Konfiguration der einzelnen VMs" '`virsh`:'
+    for GUEST in $($VIRSH list --all | $GREP -vEe "(^-|Id|$^)" | $AWK '{print $2}')
+    do
+        $ECHO -e "\n#### Gast $GUEST:"
+        $ECHO -e '```'
+        $VIRSH dumpxml $GUEST
+        $ECHO -e '```'
+        $ECHO "[nach oben](#${HOSTNAMECLN})"
+    done
 elif [[ ( -n $DOCKER ) && ( $ISROOT == true ) ]]
 then
     $ECHO -e "\n### Docker"
+fi
+
+# DRBD?
+
+if [[ -n $DRBDOVERVIEW ]]
+then
+    $ECHO -e "\n### DRBD"
+    $ECHO -e "\n#### Status:"
+    $ECHO -e '```'
+    $DRBDOVERVIEW
+    $ECHO -e '```'
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
+
+    $ECHO -e "\n#### Status aus" '`proc`:'
+    $ECHO -e '```'
+    $CAT /proc/drbd
+    $ECHO -e '```'
+    $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi
