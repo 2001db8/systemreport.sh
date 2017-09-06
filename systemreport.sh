@@ -400,7 +400,7 @@ then
     $ECHO -e "\n### SCSI Devices" '`lsscsi`:'
     vmwarn
     $ECHO -e '```'
-    $LSSCSI -L --size -v
+    $LSSCSI -L -v
     $ECHO -e '```'
     $ECHO "[nach oben](#${HOSTNAMECLN})"
 fi 
