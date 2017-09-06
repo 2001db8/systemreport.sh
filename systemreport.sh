@@ -378,7 +378,7 @@ if [[ $ISROOT == true ]]
 then
     if [[ -n $FDISK ]]
     then
-        $ECHO -e "\n### Partitionen" '`fdisk -l`:'
+        $ECHO -e "\n### Partitionen" '`fdisk`:'
         $ECHO -e '```'
         $FDISK -l
         $ECHO -e '```'
@@ -407,7 +407,7 @@ fi
 
 if [[ -n $DF ]]
 then
-    $ECHO -e "\n### Speicherplatzverbrauch" '`dh -h`:'
+    $ECHO -e "\n### Speicherplatzverbrauch" '`dh`:'
     $ECHO -e '```'
     $DF -h
     $ECHO -e '```'
@@ -622,6 +622,7 @@ then
             $ECHO -e '```'
             $TIMEOUT 61 $TCPDUMP -nn -v -i $ACTIVEINTERFACE -c 1 -s 1500 'ether[20:2] == 0x2000'
             $ECHO -e '```'
+            $ECHO "[nach oben](#${HOSTNAMECLN})"
         fi
     done < <($TAIL -n +4 /proc/net/dev | $GREP -v -Ee "[[:space:]]lo:[[:space:]]")
 fi
@@ -644,7 +645,7 @@ fi
 
 if [[ -n $SEMANAGE ]]
 then
-    $ECHO -e "\n### SELinux boolean Werte via " '`semanage`:'
+    $ECHO -e "\n### SELinux boolean Werte via" '`semanage`:'
     $ECHO -e '```'
     $ECHO -e "SELinux boolean                State  Default Description"
     $SEMANAGE boolean -l | $TAIL -n +2 | $SORT
@@ -652,7 +653,7 @@ then
     $ECHO "[nach oben](#${HOSTNAMECLN})"
 elif [[ -n $GETSEBOOL ]]
 then
-    $ECHO -e "\n### SELinux boolean Werte via " '`getsebool`:'
+    $ECHO -e "\n### SELinux boolean Werte via" '`getsebool`:'
     $ECHO -e '```'
     $GETSEBOOL -a
     $ECHO -e '```'    
@@ -801,14 +802,14 @@ then
         $SCRIPT -q -c "$POSTFIX status"      # postfix wirft nix auf STDOUT oder STDERR aus...
         $ECHO -e '```'
         $ECHO "[nach oben](#${HOSTNAMECLN})"
-        $ECHO -e "\n#### Postfix !Default-Config" '`postconf -n`:'
+        $ECHO -e "\n#### Postfix !Default-Config" '`postconf`:'
         $ECHO -e '```'
         $POSTCONF -n
         $ECHO -e '```'
         $ECHO "[nach oben](#${HOSTNAMECLN})"
             if [[ -d /etc/postfix/ ]]
                 then
-                $ECHO -e "\n#### Postfix Directory" '`/etc/postfix`:'
+                $ECHO -e "\n#### Postfix Directory Inhalt:"
                 $ECHO -e '```'
                 $LS -lah /etc/postfix
                 $ECHO -e '```'
