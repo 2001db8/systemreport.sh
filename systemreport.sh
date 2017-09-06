@@ -88,7 +88,7 @@ readonly XM=$(command -v xm)
 readonly YUM=$(command -v yum)
 
 # Hostnamen einstampfen fuer die "nach oben" Links
-readonly HOSTNAMECLN=$($HOSTNAMECMD | $SED 's/[^[:alnum:]-]//g')
+readonly HOSTNAMECLN=$($HOSTNAMECMD | $SED -e 's/\(.*\)/\L\1/;s/[^[:alnum:]-]//g')
 
 # Handelt es sich um eine VM?
 if $GREP -qEe "^flags.*hypervisor.*" /proc/cpuinfo
